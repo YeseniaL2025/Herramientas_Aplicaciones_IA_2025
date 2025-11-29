@@ -112,6 +112,46 @@ class HyAIA:
             print(f'{x} no es una cadena de caracteres')
             pass
         return x
-
+        
+class LinearRegression:
+    def __init__(self, lr=0.01, n_iters=1000):
+        self.lr = lr
+        self.n_iters = n_iters
+        self.weights = None
+        self.bias = None
+        self.mse_hist= None
+    
+    def fit(self, X, y):
+        self.mse_hist = []
+        n_samples, n_features = X.shape
+        self.weights = np.random.randn(n_features,1)/np.sqrt(n_samples)
+        self.bias = 0
+        
+        #Algoritmo de gradiente descendente
+        for k in range(self.n_iters):
+            y_pred = np.dot(X,self.weights) + self.bias # yhat = X*beta
+            dw = (1/n_samples)*np.dot(X.T, (y_pred - y)) #derivada parcial de betas (beta1,beta2,..,betan)
+            db = (1/n_samples)*np.sum(y_pred - y) #derivada parcial del bias (beta_0)
+            
+            self.weights = self.weights - self.lr*dw
+            self.bias = self.bias - self.lr*db
+            
+            self.mse_hist.append(self.mse(X,y))
+            
+    def mse(self,X,y):
+        return np.mean((y-self.predict(X))**2)
+    
+    def predict(self,X):
+        y_pred = np.dot(X,self.weights) + self.bias # yhat = X*beta
+        return y_pred
+    
+    def get_coef(self):
+        return self.weights
+    
+    def get_bias(self):
+        return self.bias
+    
+    def get_mse_hist(self):
+        return self.mse_hist
 
 
